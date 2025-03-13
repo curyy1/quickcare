@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QuickCare - Find Wait Times</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>QuickCare</h1>
+    <p>Enter your location to find nearby urgent care wait times.</p>
+    
+    <form method="POST">
+        <input type="text" name="location" placeholder="e.g., New York, NY" required>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    {% if facilities %}
+        <h2>Nearby Facilities</h2>
+        <ul>
+            {% for facility in facilities %}
+                <li>
+                    <strong>{{ facility.name }}</strong> ({{ facility.type }})<br>
+                    Distance: {{ facility.distance }} miles<br>
+                    Wait Time: {{ facility.wait_time }} minutes
+                    <form method="POST" action="/report">
+                        <input type="hidden" name="place_id" value="{{ facility.place_id }}">
+                        <input type="number" name="wait_time" placeholder="Report wait time (min)" min="0">
+                        <button type="submit">Submit</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>
